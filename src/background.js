@@ -1,11 +1,13 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import {
   createProtocol,
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+import getAllFoldersRecursively from './background_modules/get-all-folders-recursively.js'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -87,3 +89,15 @@ if (isDevelopment) {
     })
   }
 }
+
+ipcMain.on('get-all-folders-message', (event) => {
+  const sortedPath = path.join(process.env.PORTABLE_EXECUTABLE_DIR, '정리')
+  const unsortedPath = path.join(process.env.PORTABLE_EXECUTABLE_DIR, '미정리')
+  const treeItems = []
+  treeItems.push(getAllFoldersRecursively(sortedPath))
+  treeItems.push({
+    name: '미정리',
+    path: unsortedPath
+  })
+  event.reply('get-all-folders-reply', treeItems)
+})
