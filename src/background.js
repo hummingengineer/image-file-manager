@@ -7,6 +7,7 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
+import path from 'path'
 import getAllFoldersRecursively from './background_modules/get-all-folders-recursively.js'
 
 // Keep a global reference of the window object, if you don't, the window will
