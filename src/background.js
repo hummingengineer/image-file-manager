@@ -9,6 +9,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 
 import path from 'path'
 import getAllFoldersRecursively from './background_modules/get-all-folders-recursively.js'
+import readImages from './background_modules/read-images.js'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -101,4 +102,8 @@ ipcMain.on('get-all-folders-message', (event) => {
     path: unsortedPath
   })
   event.reply('get-all-folders-reply', treeItems)
+})
+
+ipcMain.on('read-images-message', (event, imageFolderPath) => {
+  readImages(event, imageFolderPath)
 })
