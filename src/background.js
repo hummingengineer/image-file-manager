@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, shell } from 'electron'
 import {
   createProtocol,
   /* installVueDevtools */
@@ -106,4 +106,8 @@ ipcMain.on('get-all-folders-message', (event) => {
 
 ipcMain.on('read-images-message', (event, imageFolderPath) => {
   readImages(event, imageFolderPath)
+})
+
+ipcMain.on('open-image-folder-message', (event, imageFilePath) => {
+  shell.showItemInFolder(imageFilePath)
 })
