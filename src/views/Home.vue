@@ -18,7 +18,7 @@
         <v-hover v-slot:default="{ hover }">
           <v-card :elevation="hover ? 12 : 2">
             <v-img :src="`data:image/${imageInfo.imageFileExt};base64,${imageInfo.imageFileData}`" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" height="200px">
-              <v-card-title v-text="imageInfo.imageFileName"/>
+              <v-card-title v-text="imageInfo.imageFileName" class="d-block text-truncate"/>
             </v-img>
             <v-card-actions>
               <v-spacer/>
