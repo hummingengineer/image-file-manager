@@ -7,6 +7,7 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
+import fs from 'fs'
 import path from 'path'
 import getAllFoldersRecursively from './background_modules/get-all-folders-recursively.js'
 import readImages from './background_modules/read-images.js'
@@ -95,14 +96,16 @@ if (isDevelopment) {
 }
 
 ipcMain.on('get-all-folders-message', (event) => {
-  const sortedPath = path.join(process.env.PORTABLE_EXECUTABLE_DIR, '정리')
-  const unsortedPath = path.join(process.env.PORTABLE_EXECUTABLE_DIR, '미정리')
   const treeItems = []
-  treeItems.push(getAllFoldersRecursively(sortedPath))
-  treeItems.push({
-    name: '미정리',
-    path: unsortedPath
+
+  const rootFolderNames = fs.readdirSync(process.env.PORTABLE_EXECUTABLE_DIR)
+                          .filter(dirent => dirent.isDirectory())
+                          .map(folderName => folderName.name)
+
+  rootFolderNames.forEach(rootFolderName => {
+    treeItems.push(getAllFoldersRecursively(rootFolderName))
   })
+
   event.reply('get-all-folders-reply', treeItems)
 })
 
