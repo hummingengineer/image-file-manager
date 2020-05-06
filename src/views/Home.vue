@@ -50,7 +50,7 @@ export default {
   watch: {
     active: {
       handler: function (val, oldVal) {
-        ipcRenderer.send('read-images-message', val[0].path)
+        if (val.length !== 0) ipcRenderer.send('read-images-message', val[0].path)
       },
       deep: true
     }
