@@ -113,3 +113,7 @@ ipcMain.on('read-images-message', (event, imageFolderPath) => {
 ipcMain.on('open-image-folder-message', (event, imageFilePath) => {
   shell.showItemInFolder(imageFilePath)
 })
+
+ipcMain.on('open-image-file-message', (event, imageFilePath) => {
+  shell.openItem(imageFilePath)
+})

@@ -17,12 +17,12 @@
       <v-col v-for="imageInfo in imageInfos" :key="imageInfo.imageFileName" :cols="3">
         <v-hover v-slot:default="{ hover }">
           <v-card :elevation="hover ? 12 : 2">
-            <v-img :src="`data:image/${imageInfo.imageFileExt};base64,${imageInfo.imageFileData}`" contain class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" height="200px">
+            <v-img style="cursor: pointer" @click="openImageFile(imageInfo.imageFilePath)" :src="`data:image/${imageInfo.imageFileExt};base64,${imageInfo.imageFileData}`" contain class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" height="200px">
               <v-card-title v-text="imageInfo.imageFileName" class="d-block text-truncate"/>
             </v-img>
             <v-card-actions>
               <v-spacer/>
-              <v-btn icon @click="openImageFolder(imageInfo.imageFilePath)"><v-icon>mdi-magnify</v-icon></v-btn>
+              <v-btn icon @click="openImageFolder(imageInfo.imageFilePath)"><v-icon>mdi-folder-open</v-icon></v-btn>
             </v-card-actions>
           </v-card>
         </v-hover>
@@ -75,6 +75,9 @@ export default {
   methods: {
     openImageFolder: function (imageFilePath) {
       ipcRenderer.send('open-image-folder-message', imageFilePath)
+    },
+    openImageFile: function (imageFilePath) {
+      ipcRenderer.send('open-image-file-message', imageFilePath)
     }
   }
 
