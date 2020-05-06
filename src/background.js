@@ -10,6 +10,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 import path from 'path'
 import getAllFoldersRecursively from './background_modules/get-all-folders-recursively.js'
 import readImages from './background_modules/read-images.js'
+import checkBeforeExecution from './background_modules/check-before-execution.js'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -74,6 +75,7 @@ app.on('ready', async () => {
     // }
 
   }
+  checkBeforeExecution()
   createWindow()
 })
 
