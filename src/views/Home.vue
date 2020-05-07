@@ -29,6 +29,12 @@
       </v-col>
     </v-row>
 
+    <v-row v-if="active.length > 0 && totalPages !== null">
+      <v-col>
+        <v-pagination v-model="currentPage" :length="totalPages" :total-visible="11"/>
+      </v-col>
+    </v-row>
+
   </v-container>
 </template>
 
@@ -43,16 +49,23 @@ export default {
       active: [],
       open: [],
       items: [],
-      imageInfos: null
+
+      imageInfos: null,
+
+      currentPage: 1,
+      totalPages: null
     }
   },
 
   watch: {
     active: {
       handler: function (val, oldVal) {
-        if (val.length !== 0) ipcRenderer.send('read-images-message', val[0].path)
+        if (val.length !== 0) ipcRenderer.send('read-images-message', val[0].path, this.currentPage)
       },
       deep: true
+    },
+    currentPage: function (changedCurrentPage) {
+      ipcRenderer.send('read-images-message', this.active[0].path, changedCurrentPage)
     }
   },
 
@@ -62,7 +75,8 @@ export default {
     })
     ipcRenderer.send('get-all-folders-message')
     
-    ipcRenderer.on('read-images-reply', (event, imageInfos) => {
+    ipcRenderer.on('read-images-reply', (event, imageInfos, totalPages) => {
+      this.totalPages = totalPages
       this.imageInfos = imageInfos
     })
   },

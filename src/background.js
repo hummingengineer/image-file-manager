@@ -110,8 +110,8 @@ ipcMain.on('get-all-folders-message', (event) => {
   event.reply('get-all-folders-reply', treeItems)
 })
 
-ipcMain.on('read-images-message', (event, imageFolderPath) => {
-  readImages(event, imageFolderPath)
+ipcMain.on('read-images-message', (event, imageFolderPath, currentPage) => {
+  readImages(event, imageFolderPath, currentPage)
 })
 
 ipcMain.on('open-image-folder-message', (event, imageFilePath) => {
