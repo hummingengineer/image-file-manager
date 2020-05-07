@@ -98,13 +98,14 @@ if (isDevelopment) {
 ipcMain.on('get-all-folders-message', (event) => {
   const treeItems = []
 
-  const rootFolderNames = fs.readdirSync(process.env.PORTABLE_EXECUTABLE_DIR)
-                          .filter(dirent => dirent.isDirectory())
-                          .map(folderName => folderName.name)
+  const rootFolderNames = fs.readdirSync(process.env.PORTABLE_EXECUTABLE_DIR, { withFileTypes: true })
+                            .filter(dirent => dirent.isDirectory())
+                            .map(folderName => folderName.name)
 
-  rootFolderNames.forEach(rootFolderName => {
-    treeItems.push(getAllFoldersRecursively(rootFolderName))
-  })
+  for (let i = rootFolderNames.length - 1; i >= 0; i--) {
+    const rootFolderPath = path.join(process.env.PORTABLE_EXECUTABLE_DIR, rootFolderNames[i])
+    treeItems.push(getAllFoldersRecursively(rootFolderPath))
+  }
 
   event.reply('get-all-folders-reply', treeItems)
 })
