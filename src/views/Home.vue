@@ -13,7 +13,7 @@
       </v-col>
     </v-row>
 
-    <v-row v-if="active.length > 0 && imageInfos !== null">
+    <v-row id="cardSection" v-if="active.length > 0 && imageInfos !== null">
       <v-col v-for="imageInfo in imageInfos" :key="imageInfo.imageFileName" :cols="3">
         <v-hover v-slot:default="{ hover }">
           <v-card :elevation="hover ? 12 : 2">
@@ -78,6 +78,8 @@ export default {
     ipcRenderer.on('read-images-reply', (event, imageInfos, totalPages) => {
       this.totalPages = totalPages
       this.imageInfos = imageInfos
+      const focusPosition = document.querySelector("#cardSection").offsetTop
+      window.scrollTo({top:focusPosition - 25, behavior:'smooth'})
     })
   },
 
