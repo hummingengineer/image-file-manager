@@ -2,7 +2,7 @@
   <v-container>
 
     <v-row>
-      <v-col>
+      <v-col cols="11">
         <v-treeview :items="items" item-key="name" :active.sync="active" :open.sync="open" open-on-click activatable transition return-object>
           <template v-slot:prepend="{ open }">
             <v-icon>
@@ -10,6 +10,17 @@
             </v-icon>
           </template>
         </v-treeview>
+      </v-col>
+
+      <v-col cols="1">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon color="pink" v-on="on" @click="refreshTreeview" :loading="refreshLoading">
+              <v-icon>mdi-refresh</v-icon>
+            </v-btn>
+          </template>
+          <span>폴더 구조 새로 고침</span>
+        </v-tooltip>
       </v-col>
     </v-row>
 
@@ -53,7 +64,9 @@ export default {
       imageInfos: null,
 
       currentPage: 1,
-      totalPages: null
+      totalPages: null,
+
+      refreshLoading: false
     }
   },
 
@@ -94,6 +107,10 @@ export default {
     },
     openImageFile: function (imageFilePath) {
       ipcRenderer.send('open-image-file-message', imageFilePath)
+    },
+    refreshTreeview: function () {
+      this.refreshLoading = true
+      ipcRenderer.send('get-all-folders-message')
     }
   }
 
