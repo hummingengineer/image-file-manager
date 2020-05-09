@@ -11,7 +11,7 @@
           </template>
         </v-treeview>
       </v-col>
-
+      
       <v-col cols="1">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -85,14 +85,19 @@ export default {
   mounted: function () {
     ipcRenderer.on('get-all-folders-reply', (event, treeItems) => {
       this.items = treeItems
+      this.refreshLoading = false
     })
     ipcRenderer.send('get-all-folders-message')
     
     ipcRenderer.on('read-images-reply', (event, imageInfos, totalPages) => {
       this.totalPages = totalPages
       this.imageInfos = imageInfos
-      const focusPosition = document.querySelector("#cardSection").offsetTop
-      window.scrollTo({top:focusPosition - 25, behavior:'smooth'})
+
+      const cardSection = document.querySelector("#cardSection")
+      if (cardSection) {
+        const focusPosition = cardSection.offsetTop
+        window.scrollTo({top:focusPosition - 25, behavior:'smooth'})
+      }
     })
   },
 
