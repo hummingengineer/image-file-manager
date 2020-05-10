@@ -3,7 +3,7 @@
 
     <v-row>
       <v-col cols="11">
-        <v-treeview :items="items" item-key="name" :active.sync="active" :open.sync="open" open-on-click activatable transition return-object>
+        <v-treeview :items="items" item-key="path" :active.sync="active" :open.sync="open" open-on-click activatable transition return-object>
           <template v-slot:prepend="{ open }">
             <v-icon>
               {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
@@ -11,7 +11,7 @@
           </template>
         </v-treeview>
       </v-col>
-      
+
       <v-col cols="1">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -24,8 +24,8 @@
       </v-col>
     </v-row>
 
-    <v-row id="cardSection" v-if="active.length > 0 && imageInfos !== null">
-      <v-col v-for="imageInfo in imageInfos" :key="imageInfo.imageFileName" :cols="3">
+    <v-row id="cardSection" v-if="selectedFolderPath && imageInfos !== null">
+      <v-col v-for="imageInfo in imageInfos" :key="imageInfo.imageFilePath" :cols="3">
         <v-hover v-slot:default="{ hover }">
           <v-card :elevation="hover ? 12 : 2">
             <v-img style="cursor: pointer" @click="openImageFile(imageInfo.imageFilePath)" :src="`data:image/${imageInfo.imageFileExt};base64,${imageInfo.imageFileData}`" contain class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" height="200px">
@@ -40,7 +40,7 @@
       </v-col>
     </v-row>
 
-    <v-row v-if="active.length > 0 && totalPages !== null">
+    <v-row v-if="selectedFolderPath && totalPages !== null">
       <v-col>
         <v-pagination v-model="currentPage" :length="totalPages" :total-visible="11"/>
       </v-col>
@@ -70,15 +70,21 @@ export default {
     }
   },
 
+  computed: {
+    selectedFolderPath: function () {
+      return this.active[0] ? this.active[0].path : undefined
+    }
+  },
+
   watch: {
-    active: {
-      handler: function (val, oldVal) {
-        if (val.length !== 0) ipcRenderer.send('read-images-message', val[0].path, this.currentPage)
-      },
-      deep: true
+    selectedFolderPath: function () {
+      if (this.selectedFolderPath) {
+        if (this.currentPage !== 1) this.currentPage = 1
+        else if (this.currentPage === 1) ipcRenderer.send('read-images-message', this.selectedFolderPath, this.currentPage)
+      }
     },
-    currentPage: function (changedCurrentPage) {
-      ipcRenderer.send('read-images-message', this.active[0].path, changedCurrentPage)
+    currentPage: function () {
+      ipcRenderer.send('read-images-message', this.selectedFolderPath, this.currentPage)
     }
   },
 
@@ -114,6 +120,7 @@ export default {
       ipcRenderer.send('open-image-file-message', imageFilePath)
     },
     refreshTreeview: function () {
+      this.active = []
       this.refreshLoading = true
       ipcRenderer.send('get-all-folders-message')
     }
